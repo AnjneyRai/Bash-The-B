@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BATTLE OF WITS (and punches!)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--ink:#5a4636;--parch:#fbf1dd;--gold:#c9974f;--rose:#d98c86;--peach:#f2c9a0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#f3dcc0;color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;overflow-x:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.drift{animation:dr 60s ease-in-out infinite alternate}
+@keyframes dr{to{transform:translateX(70px)}}
+#app{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:14px 12px 24px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+h1{font-style:italic;font-weight:700;text-align:center;font-size:clamp(1.7rem,6vw,3.3rem);margin:4px 0 0;line-height:1.05;color:var(--ink);text-shadow:0 0 18px #fff3d6,0 0 4px #fff3d6}
+#sc{width:100%;max-height:56vh;overflow:visible}
+#bub{position:relative;background:var(--parch);border:2px solid var(--gold);outline:2px solid var(--parch);box-shadow:0 0 0 5px var(--gold),0 10px 30px #b9805544;border-radius:90px 90px 14px 14px/50px 50px 14px 14px;padding:16px 26px;width:min(100%,640px);min-height:92px;margin:14px 0 6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:clamp(1.2rem,3.6vw,1.65rem);line-height:1.25}
+#bub:after{content:"";position:absolute;top:-17px;width:20px;height:20px;background:var(--parch);border-left:2px solid var(--gold);border-top:2px solid var(--gold);transform:rotate(45deg);display:none}
+#bub.l:after{display:block;left:22%}#bub.r:after{display:block;right:22%}
+#bub.h{visibility:hidden}
+#pg{width:min(100%,640px);margin-top:14px;text-align:center}
+#pg b{letter-spacing:.14em;font-size:1rem}
+#track{height:24px;border:2px solid var(--gold);border-radius:14px;background:#fff6e4;overflow:hidden;margin-top:4px;position:relative;box-shadow:inset 0 2px 5px #c9974f55}
+#fill{height:100%;width:0;background:linear-gradient(90deg,#f2c9a0,#e8a06a,#d98c86);transition:width 1s ease}
+#pc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+button,.ref{font-family:inherit;font-weight:700;font-size:1.4rem;color:var(--ink);background:var(--parch);border:2px solid var(--gold);border-radius:40px 40px 12px 12px;padding:10px 32px;margin-top:16px;cursor:pointer;box-shadow:0 0 0 4px var(--parch),0 0 0 6px var(--gold);min-height:48px;text-decoration:none;display:inline-block;letter-spacing:.04em}
+button:active,.ref:active{transform:translateY(2px)}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,.ref:focus-visible{outline:3px dashed var(--rose);outline-offset:6px}
+#m{display:none;position:relative;z-index:1;min-height:100vh;padding:20px;align-items:center;justify-content:center}
+.frame{background:var(--parch);max-width:640px;max-height:92vh;overflow:auto;text-align:center;padding:34px 30px 30px;border:3px double var(--gold);outline:2px solid var(--gold);outline-offset:6px;box-shadow:0 0 0 14px #fbf1ddcc,0 20px 60px #8a5a3a55;border-radius:200px 200px 10px 10px/90px 90px 10px 10px}
+.frame p{margin:0 0 14px;font-size:clamp(1.1rem,3.4vw,1.4rem);line-height:1.45}
+.frame .ly{font-style:italic;font-weight:500;color:#7a5238;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);padding:12px 6px}
+.frame button,.frame .ref{margin:8px 6px 0;font-size:1.2rem;padding:8px 22px}
+#mute{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:6;margin:0;padding:0;width:44px;height:44px;border-radius:50%;font-size:1.3rem;display:none}
+body.msg #app{display:none}body.msg #m{display:flex}
+#A,#R{transition:transform .22s ease-out}
+#A.pa{transform:translateX(-26px)}#A.pp{transform:translateX(330px)}
+#R.hit{transform:translateX(60px) rotate(14deg)}#R.hit2{transform:translateX(100px) rotate(26deg)}
+#R.v{transform:translateX(-95px) rotate(88deg)}
+#arm2,#armU,#dz,#st,#ml,#win,#code{display:none}
+#A.pp #arm1,#A.win #arm1{display:none}#A.pp #arm2{display:inline}#A.win #armU,#A.win #win{display:inline}#A.win #smile{display:none}
+#R.hit #eyes,#R.hit2 #eyes,#R.v #eyes{display:none}#R.hit #dz,#R.hit2 #dz,#R.v #dz{display:inline}
+#sc.on #st,#sc.on #ml{display:inline}#sc.mono #code{display:inline}
+#st text{animation:pop .5s ease-out}
+@keyframes pop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.5)}100%{transform:scale(1);opacity:1}}
+#imp{font-family:'Permanent Marker',cursive;fill:#c8503f;stroke:var(--ink);stroke-width:2.5;paint-order:stroke;text-anchor:middle;opacity:0;font-size:54px;transform-box:fill-box;transform-origin:center}
+#imp.mono{font-family:'Courier New',monospace;font-weight:bold;fill:#2f7a43;font-size:34px}
+#imp.big{font-size:84px}
+#imp.on{opacity:1;animation:boom .45s ease-out}
+@keyframes boom{0%{transform:scale(.2) rotate(-10deg)}70%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(-2deg)}}
+.sh{animation:sh .2s linear}.sh2{animation:sh .26s linear}
+@keyframes sh{0%,100%{translate:0 0}25%{translate:-7px 3px}75%{translate:7px -3px}}
+.cf{position:fixed;top:-20px;width:10px;height:14px;z-index:5;pointer-events:none;animation:fall linear forwards;border-radius:50% 0}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){.sh,.sh2,.drift{animation:none}.cf{display:none}}
+</style>
+</head>
+<body>
+<svg id="bg" viewBox="0 0 1200 700" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+<defs>
+<linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9cbd6"/><stop offset=".6" stop-color="#f6dcc0"/><stop offset="1" stop-color="#f2b99a"/></linearGradient>
+<filter id="w"><feTurbulence baseFrequency=".03" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+<filter id="bl"><feGaussianBlur stdDeviation="9"/></filter>
+</defs>
+<rect width="1200" height="700" fill="url(#sk)"/>
+<g class="drift" fill="#fffaf0" filter="url(#bl)" opacity=".85"><ellipse cx="480" cy="170" rx="130" ry="30"/><ellipse cx="560" cy="150" rx="90" ry="28"/><ellipse cx="780" cy="230" rx="140" ry="26"/><ellipse cx="660" cy="110" rx="80" ry="18"/></g>
+<g stroke="none"><path d="M330 480Q450 400 560 450T870 420V560H330Z" fill="#b5b98f" opacity=".8"/><path d="M330 520Q500 450 700 500T870 480V560H330Z" fill="#9aa87a"/>
+<ellipse cx="760" cy="440" rx="9" ry="60" fill="#5f7152"/><ellipse cx="800" cy="450" rx="7" ry="48" fill="#6f8160"/><ellipse cx="420" cy="455" rx="8" ry="50" fill="#6f8160"/></g>
+<g filter="url(#w)" stroke="#8a6a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<path fill-rule="evenodd" d="M0 0H1200V700H0Z M330 560V290A270 270 0 0 1 870 290V560Z" fill="#f1d9b8"/>
+<path d="M0 90H330M870 90H1200M0 130H330M870 130H1200" fill="none" opacity=".35"/>
+<rect x="312" y="300" width="24" height="262" fill="#f8ead2"/><rect x="864" y="300" width="24" height="262" fill="#f8ead2"/>
+<path d="M322 310V555M328 310V555M870 310V555M876 310V555" fill="none" opacity=".4" stroke-width="1.2"/>
+<rect y="540" width="1200" height="160" fill="#e3bf95" stroke="none"/><path d="M0 540H1200M0 600H1200M0 660H1200M200 540L120 700M500 540L440 700M800 540L860 700M1000 540L1100 700" fill="none" opacity=".4"/>
+<rect x="30" y="420" width="260" height="120" rx="12" fill="#f8ead2"/><rect x="30" y="375" width="20" height="165" fill="#d9b88a"/><rect x="58" y="425" width="100" height="44" rx="20" fill="#fffaf0"/><path d="M180 440Q230 470 285 440M70 500H280" fill="none" opacity=".5"/>
+<circle cx="150" cy="190" r="62" fill="#f8ead2"/><circle cx="150" cy="190" r="52" fill="#f3cfa6" opacity=".6"/><circle cx="132" cy="184" r="5" fill="#8a6a4a"/><circle cx="162" cy="184" r="5" fill="#8a6a4a"/><path d="M130 206Q148 220 166 206M112 160Q150 132 190 160" fill="none"/>
+<rect x="960" y="430" width="120" height="110" fill="#e8c9a0"/><path d="M1020 430V390M990 390L1000 330H1040L1050 390Z" fill="#fbe0a0"/>
+<path d="M1100 430Q1060 360 1075 330M1100 430Q1130 370 1120 320" fill="none" stroke="#6f8160"/><circle cx="1075" cy="326" r="11" fill="#eba15f"/><circle cx="1122" cy="316" r="11" fill="#f0b074"/><circle cx="1100" cy="352" r="10" fill="#e8955b"/>
+<path d="M930 70Q980 220 930 330M1180 70Q1140 220 1190 330" fill="#e9b79a" opacity=".45"/>
+<g transform="rotate(2 1024 236)"><rect x="962" y="176" width="124" height="112" fill="#efe0f0"/><rect x="970" y="184" width="108" height="96" stroke-width="1.2" fill="none"/><path d="M959 180L976 174M1072 174L1089 180" stroke="#d98c86" stroke-width="7"/><path transform="translate(0,-14)" d="M1000 226Q1000 206 1024 206Q1048 206 1048 226Q1048 240 1034 242L1034 250M1018 232Q1024 220 1032 232" fill="none" stroke-width="2"/><text x="1024" y="258" font-size="17" text-anchor="middle" fill="#4a3626" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">proud</text><text x="1024" y="278" font-size="21" font-style="italic" text-anchor="middle" fill="#c8503f" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">psycholodu</text></g>
+<g id="book"><rect x="968" y="406" width="100" height="24" rx="3" fill="#b5473a"/><path d="M972 406V430M1064 406V430" stroke="#f3d98a" stroke-width="2"/><text x="1018" y="422" font-size="11.5" text-anchor="middle" fill="#fff6dc" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">how to be a bitch</text></g>
+</g></svg>
+
+<div id="app">
+<h1>BATTLE OF WITS (and punches!)</h1>
+<svg id="sc" viewBox="0 0 840 480" role="img" aria-label="Two doodle girls facing each other">
+<g stroke="#4a3626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<g filter="url(#w)">
+<g id="posters">
+<g transform="rotate(-4 100 78)"><rect x="25" y="28" width="150" height="100" fill="#fbe3c2"/><rect x="33" y="36" width="134" height="84" stroke-width="1.2"/><path d="M70 66L78 52L90 62L100 50L110 62L122 52L130 66Z" fill="#f0c15a" stroke-width="2"/><path d="M22 30L38 24M162 24L178 30" stroke="#d98c86" stroke-width="7"/><text x="100" y="88" font-size="21" text-anchor="middle" fill="#4a3626" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">proud bihari</text><text x="100" y="113" font-size="27" font-style="italic" text-anchor="middle" fill="#c8503f" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">baddie</text></g>
+<g transform="rotate(3 265 76)"><rect x="190" y="24" width="150" height="100" fill="#dfe9e4"/><rect x="198" y="32" width="134" height="84" stroke-width="1.2"/><rect x="250" y="38" width="30" height="42" rx="5" fill="#fffaf0" stroke-width="2"/><path d="M257 48H273M257 56H273M257 64H270M265 84V92M259 88L265 94L271 88" stroke-width="1.6"/><path d="M187 28L204 22M326 22L343 28" stroke="#d98c86" stroke-width="7"/><text x="265" y="110" font-size="25" font-style="italic" text-anchor="middle" fill="#4a3626" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700">doomscroller</text></g>
+</g>
+<g transform="translate(190,360)">
+ <g id="cup"><rect x="-150" y="-46" width="62" height="46" rx="7" fill="#fffaf0"/><path d="M-88-36Q-72-36-72-22Q-72-10-88-12M-148-44L-90-48" stroke-width="1.5"/><text x="-119" y="-18" font-size="11" fill="#4a3626" stroke="none" text-anchor="middle" font-family="Cormorant Garamond,serif" font-weight="700">nimbu chai</text><text x="-119" y="-6" font-size="11" fill="#4a3626" stroke="none" text-anchor="middle" font-family="Cormorant Garamond,serif" font-weight="700">lover</text></g>
+ <g id="A">
+  <path d="M-40-200Q-58-100-34-60L34-60Q58-100 40-200Q0-238-40-200Z" fill="#6b4630"/>
+  <path d="M-30-195Q-52-120-36-64M-18-205Q-42-120-26-62M-6-208Q-32-120-18-60M30-195Q52-120 38-64M18-205Q42-120 28-62M44-180Q58-110 44-70" stroke-width="1.2" stroke="#2f1d10"/>
+  <path d="M-30-128L30-128L46-24L-46-24Z" fill="#e9b88a"/><path d="M-22-120L-34-30M-8-120L-14-28M8-120L14-28M22-120L34-30M-40-60L40-58" stroke-width="1.1"/><path d="M-14-24V0M14-24V0"/><path d="M-16-24V0" stroke-width="1" transform="translate(3,0)"/>
+  <circle cy="-165" r="36" fill="#f7dcbf"/><ellipse cx="2" cy="-164" rx="36" ry="35" stroke-width="1" opacity=".6"/><path d="M-34-176Q-8-208 34-172Q10-192-34-176Z" fill="#6b4630"/><path d="M-28-182Q-6-198 24-180" stroke-width="1"/>
+  <circle cx="26" cy="-196" r="6" fill="#d98c86" stroke-width="1.5"/>
+  <circle cx="-12" cy="-165" r="3" fill="#4a3626"/><circle cx="12" cy="-165" r="3" fill="#4a3626"/>
+  <path id="smile" d="M-12-148Q0-137 12-148"/><path id="win" d="M-14-150Q0-130 14-150Z" fill="#fff"/>
+  <path id="arm1" d="M30-120L52-70M33-118L55-69" stroke-width="2"/>
+  <g id="arm2"><path d="M30-120L96-116M30-114L96-110" stroke-width="2"/><circle cx="106" cy="-116" r="13" fill="#f7dcbf"/></g>
+  <g id="armU"><path d="M-30-120L-62-196M-26-120L-58-196" stroke-width="2"/><circle cx="-64" cy="-206" r="12" fill="#f7dcbf"/><path d="M30-120L52-70"/></g>
+ </g>
+</g>
+<g transform="translate(650,360)">
+ 
+ <g id="R">
+  <circle cy="-228" r="15" fill="#3b2a3a"/>
+  <path d="M-42-165Q-46-214 0-208Q46-214 42-165L38-132L-38-132Z" fill="#3b2a3a"/>
+  <path d="M-34-196Q-40-160-34-136M-20-204Q-26-160-22-134M20-204Q26-160 22-134M34-196Q40-160 34-136" stroke="#e8d4c0" stroke-width="1" opacity=".5"/>
+  <path d="M-30-128L30-128L46-24L-46-24Z" fill="#9fb0a6"/><path d="M-22-120L-34-30M-8-120L-14-28M8-120L14-28M22-120L34-30" stroke-width="1.1"/><path d="M-14-24V0M14-24V0"/>
+  <circle cy="-165" r="36" fill="#f7dcbf"/><ellipse cx="-2" cy="-166" rx="36" ry="35" stroke-width="1" opacity=".6"/><path d="M-36-172Q0-200 36-172Q0-186-36-172Z" fill="#3b2a3a"/>
+  <g id="eyes"><path d="M-20-168H-6M6-168H20" stroke-width="5"/><path d="M-22-178L-4-173M22-178L4-173"/></g>
+  <g id="dz" stroke-width="3"><path d="M-18-172L-8-162M-8-172L-18-162M8-172L18-162M18-172L8-162"/></g>
+  <path d="M-12-148Q4-146 15-157"/>
+  <path d="M-30-120L8-92M30-120L-8-92M-30-116L8-88M30-116L-8-88" stroke-width="2"/>
+ </g>
+</g>
+</g>
+<text x="420" y="215" text-anchor="middle" font-size="58" font-style="italic" font-family="Cormorant Garamond,serif" font-weight="700" fill="#c9974f" stroke="#4a3626" stroke-width="1.5" paint-order="stroke">VS</text>
+<text x="190" y="440" text-anchor="middle" font-size="22" fill="#4a3626" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700" letter-spacing="1.5">THE COOLEST GIRL EVER</text>
+<text x="650" y="440" text-anchor="middle" font-size="22" fill="#4a3626" stroke="none" font-family="Cormorant Garamond,serif" font-weight="700" letter-spacing="1.5">THE EGOISTIC JEALOUS BITCH</text>
+<g id="ml" stroke="#4a3626" stroke-width="4"><path d="M520 150L470 130M525 190L460 190M520 230L470 250M560 120L540 80M590 260L580 300"/></g>
+<g id="st" font-size="34" fill="#f0b02e" stroke="#4a3626" stroke-width="1.5"><text x="560" y="110">★</text><text x="700" y="100">★</text><text x="740" y="170">★</text><text x="610" y="60">★</text><text x="670" y="40" font-size="24">★</text></g>
+<g id="code" font-family="Courier New,monospace" font-size="13" fill="#2f7a43" stroke="none"><text x="610" y="75">&lt;404/&gt;</text><text x="440" y="85">null</text></g>
+<text id="imp" x="420" y="150">BONK!</text>
+</g>
+</svg>
+<div id="bub" class="h"></div>
+<div id="pg"><b>DE BITCHIFICATION PROGRESS</b><div id="track"><div id="fill"></div><div id="pc">0%</div></div></div>
+<button id="btn">LET'S GO →</button>
+</div>
+
+<audio id="bgm" src="music.mp3" loop preload="auto"></audio>
+<button id="mute" aria-label="Mute or unmute music">♪</button>
+<div id="m"><div class="frame">
+<p>Thank you for sharing it with me. You do not need to be hesitant. I can only imagine how hard it would be for you to live with such idiots, but genuinely you do a great job. Being always cheerful and radiating energy, i mean you make me feel energetic, so yeah you def are something. Anytime those idiots make you feel small just know they are jealous about your badminton skills.</p>
+<p>Well can't end without a reference, huh 🤔, this one seems nice -</p>
+<p class="ly">And anytime you feel the pain Hey Apoorva refrain, don't carry the world up on your shoulder for well you know that it's a fool who plays it cool by making his world a little colder.</p>
+<a class="ref" href="https://www.youtube.com/watch?v=mQER0A0ej0M" target="_blank" rel="noopener">Explore reference</a>
+<button id="again">HUMBLE AGAIN →</button>
+</div></div>
+
+<script>
+// r = roommate line, a = Apoorva line, p = punch (impact text)
+const E=[
+["r","You know, some people just naturally have better taste than others."],
+["a","Then I guess personality is where you fell short."],
+["p","BONK!"],
+["r","Honestly, you dress like you got ready in the dark."],
+["a","Still managed to look better than whatever the hell is bugging me right now."],
+["p","FASHION DAMAGE!"],
+["r","I suppose I shouldn't expect much from someone from Bihar."],
+["a","REGIONALISTIC INSULTS IN BIG 2026? GET SOME TASTE."],
+["p","CULTURAL BONK!"],
+["r","You should be grateful I even include you in conversations."],
+["a","You don't include me. You interrupt me. I was doing just fine before you decided I needed your permission to speak."],
+["p","SILENCE DAMAGE!"],
+["r","You're a CSE student? You don't exactly give ‘smart’."],
+["a","COME ON. The entire IQ sum of this room was like 6 before I entered."],
+["p","404: INTELLIGENCE NOT FOUND"],
+["r","I study psychology. I can read people like you in five minutes."],
+["a","Then your degree isn't helping."],
+["p","PSYCH 101: FAILED!"],
+["r","Wow, you've suddenly got a lot to say."],
+["a","baka i'm a swiftie i'll say say say and bakas like you gonna hate hate hate !!!"],
+["p","ULTRA BONK!"],
+["r","Don't get too confident. You still know your place."],
+["a","I EXACTLY KNOW WHERE I BELONG — TO THE STARS."],
+["p","EGO: OBLITERATED!!!"],
+["a","Now read the room, Mrs. Psychology."]
+];
+const $=id=>document.getElementById(id);
+const bub=$('bub'),btn=$('btn'),sc=$('sc'),A=$('A'),R=$('R'),imp=$('imp'),app=$('app');
+let i=-1,punches=0,busy=false;
+const TOTAL=E.filter(e=>e[0]=='p').length;
+function intro(){bub.className='';bub.textContent='Sometimes the best response is a little perspective.'}
+function say(e){bub.className=e[0]=='r'?'r':'l';bub.textContent=e[1]}
+function setProg(){const v=Math.round(punches/TOTAL*100);$('fill').style.width=v+'%';$('pc').textContent=v+'%'}
+function T(f,ms){setTimeout(f,ms)}
+function punch(text){
+  busy=true;btn.disabled=true;bub.className='h';
+  const last=text.startsWith('EGO');
+  imp.textContent=text;imp.setAttribute('class',(text.startsWith('404')?'mono ':'')+(last?'big':''));
+  sc.classList.toggle('mono',text.startsWith('404'));
+  A.classList.add('pa');
+  T(()=>{A.classList.remove('pa');A.classList.add('pp')},300);
+  T(()=>{
+    R.classList.add(last?'hit2':'hit');sc.classList.add('on');imp.classList.add('on');
+    const c=last?'sh2':'sh';app.classList.add(c);T(()=>app.classList.remove(c),last?260:200);
+    if(last)confetti(0);
+  },520);
+  T(()=>{A.classList.remove('pp');if(!last)R.classList.remove('hit');},last?2000:1500);
+  T(()=>{sc.classList.remove('on','mono');imp.classList.remove('on');imp.setAttribute('class','');},last?2200:1600);
+  T(()=>{punches++;setProg();if(last){R.classList.remove('hit2');R.classList.add('v');A.classList.add('win');confetti(50)}},last?2300:1700);
+  T(()=>{busy=false;btn.disabled=false;btn.textContent='NEXT →'},last?3400:2800);
+}
+function confetti(n){
+  const cols=['#e9a23b','#d98c86','#9aa87a','#f3d98a','#b4a3cf','#f2c9a0'];
+  for(let k=0;k<n;k++){const d=document.createElement('i');d.className='cf';
+    d.style.left=Math.random()*100+'vw';d.style.background=cols[k%cols.length];
+    d.style.animationDuration=(2.5+Math.random()*2.5)+'s';d.style.animationDelay=Math.random()*1.2+'s';
+    document.body.appendChild(d);setTimeout(()=>d.remove(),7000)}
+}
+function reset(){
+  i=-1;punches=0;busy=false;setProg();
+  [A,R].forEach(x=>x.removeAttribute('class'));
+  sc.removeAttribute('class');imp.setAttribute('class','');
+  document.querySelectorAll('.cf').forEach(x=>x.remove());
+  document.body.classList.remove('msg');
+  btn.disabled=false;btn.textContent="LET'S GO →";intro();window.scrollTo(0,0);
+}
+btn.onclick=()=>{
+  if(busy)return;
+  if(i>=E.length-1){document.body.classList.add('msg');return}
+  if(i<0)startMusic();i++;const e=E[i];btn.textContent='NEXT →';
+  if(e[0]=='p')punch(e[1]);else say(e);
+};
+const bgm=$('bgm'),mute=$('mute');bgm.volume=.4;
+function startMusic(){try{bgm.play().then(()=>{mute.style.display='block'}).catch(()=>{})}catch(e){}}
+mute.onclick=()=>{bgm.muted=!bgm.muted;mute.textContent=bgm.muted?'🔇':'♪'};
+$('again').onclick=reset;
+reset();
+</script>
+</body>
+</html>
